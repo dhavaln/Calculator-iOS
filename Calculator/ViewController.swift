@@ -27,15 +27,39 @@ class ViewController: UIViewController {
         }
     }
     
+    func operate(operation: (Double, Double) -> Double ){
+        if operandStack.count < 2 {
+            return;
+        }
+        
+        displayValue = operation( operandStack.removeLast(), operandStack.removeLast() );
+        enter()
+    }
+    
+    // Current XCode/Swift version does not allow the method overriding, hence the private attribute which allows the overriding without changing the function name
+    private func operate(operation: Double -> Double ){
+        if operandStack.count < 1 {
+            return;
+        }
+        
+        displayValue = operation( operandStack.removeLast() );
+        enter()
+    }
+    
     @IBAction func performOperation(sender: UIButton) {
-        var operation = sender.currentTitle
+        var operation = sender.currentTitle!
+        
+        if userIsInTheMiddleOfTypingANumber {
+            enter()
+        }
         
         switch operation {
-            case "":
-            case "":
-            case "":
-            case "":
-            default:
+        case "+": operate() { $0 + $1 }
+        case "−": operate() { $1 - $0 }
+        case "✕": operate() { $0 * $1 }
+        case "⁒": operate() { $1 / $0 }
+        case "√": operate() { sqrt($0) }
+        default: println("Operation Missing")
         }
     }
     
